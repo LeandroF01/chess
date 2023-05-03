@@ -13,7 +13,7 @@ class ChessCell extends HTMLElement {
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid #000;
+            border: var(--border-style);
             width: var(--cell-size);
             height: var(--cell-size);
             box-sizing: border-box;
@@ -30,7 +30,7 @@ class ChessCell extends HTMLElement {
 	render() {
 		this.shadowRoot.innerHTML = /*html*/ `
 		<style>${ChessCell.styles}</style>
-		<div class="cell">${this.x}${this.y}</div>
+		<div class="cell"></div>
 		`;
 	}
 }
