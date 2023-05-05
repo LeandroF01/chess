@@ -1,4 +1,5 @@
 import "./ChessCell.js";
+import "./ChessPiece.js";
 
 class ChessBoard extends HTMLElement {
 	constructor() {
@@ -47,7 +48,6 @@ class ChessBoard extends HTMLElement {
 			align-items: center;
 			width: var(--cell-size);
 			height: var(--cell-size);
-			border: 1px solid #fff;
 			box-sizing: border-box;
 		}
 		.board{
@@ -85,7 +85,7 @@ class ChessBoard extends HTMLElement {
 	}
 
 	renderCell(y, x) {
-		const col = String.fromCharCode(65 + x);
+		const col = String.fromCharCode(97 + x);
 		const row = 9 - (y + 1);
 		return /*html*/ `
 		<chess-cell x="${col}"y="${row}"></chess-cell>
@@ -97,6 +97,55 @@ class ChessBoard extends HTMLElement {
 		return texts
 			.map((text) => /* html */ `<div class="fake">${text}</div>`)
 			.join("");
+	}
+
+	addPiece(letter, position) {
+		const x = position[0];
+		const y = position[1];
+
+		const cell = this.shadowRoot
+			.querySelector(`[x="${x}"][y="${y}"]`)
+			.shadowRoot.querySelector(".cell");
+		cell.innerHTML = /*html*/ `<chess-piece type="${letter}"></chess-piece>`;
+	}
+
+	preparePieces() {
+		const positions = [
+			["R", "a8"],
+			["N", "b8"],
+			["B", "c8"],
+			["Q", "d8"],
+			["K", "e8"],
+			["B", "f8"],
+			["N", "g8"],
+			["R", "h8"],
+			["P", "a7"],
+			["P", "b7"],
+			["P", "c7"],
+			["P", "d7"],
+			["P", "e7"],
+			["P", "f7"],
+			["P", "g7"],
+			["P", "h7"],
+			["r", "a1"],
+			["n", "b1"],
+			["b", "c1"],
+			["q", "d1"],
+			["k", "e1"],
+			["b", "f1"],
+			["n", "g1"],
+			["r", "h1"],
+			["p", "a2"],
+			["p", "b2"],
+			["p", "c2"],
+			["p", "d2"],
+			["p", "e2"],
+			["p", "f2"],
+			["p", "g2"],
+			["p", "h2"],
+		];
+
+		positions.forEach(([piece, position]) => this.addPiece(piece, position));
 	}
 
 	render() {
