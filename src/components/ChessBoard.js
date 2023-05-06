@@ -1,5 +1,6 @@
 import "./ChessCell.js";
 import "./ChessPiece.js";
+import initialLocation from "../data/initialLocation.json";
 
 class ChessBoard extends HTMLElement {
 	constructor() {
@@ -110,42 +111,9 @@ class ChessBoard extends HTMLElement {
 	}
 
 	preparePieces() {
-		const positions = [
-			["R", "a8"],
-			["N", "b8"],
-			["B", "c8"],
-			["Q", "d8"],
-			["K", "e8"],
-			["B", "f8"],
-			["N", "g8"],
-			["R", "h8"],
-			["P", "a7"],
-			["P", "b7"],
-			["P", "c7"],
-			["P", "d7"],
-			["P", "e7"],
-			["P", "f7"],
-			["P", "g7"],
-			["P", "h7"],
-			["r", "a1"],
-			["n", "b1"],
-			["b", "c1"],
-			["q", "d1"],
-			["k", "e1"],
-			["b", "f1"],
-			["n", "g1"],
-			["r", "h1"],
-			["p", "a2"],
-			["p", "b2"],
-			["p", "c2"],
-			["p", "d2"],
-			["p", "e2"],
-			["p", "f2"],
-			["p", "g2"],
-			["p", "h2"],
-		];
-
-		positions.forEach(([piece, position]) => this.addPiece(piece, position));
+		initialLocation.forEach(([piece, position]) =>
+			this.addPiece(piece, position)
+		);
 	}
 
 	render() {
