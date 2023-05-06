@@ -14,28 +14,34 @@ class ChessBoard extends HTMLElement {
             --pleace-size: 54px;
             --cell-size: 72px;
 			--board-size: calc(var(--cell-size) * 8);
+			--border-style: 0;
+        }
 
+		:host(.wood){
 			--color-odd: #eed2aa;
 			--color-even: #90502f;
 			--color-frame: #62351f; 
-
-			--border-style: 0;
-        }
-		.frame{
-			display: grid;
-        grid-template-areas: "top top top"
-                              "left board right"
-                              "bottom bottom bottom";
-        justify-content: center;
-        align-items: center;
-        width: calc(var(--cell-size) * 10);
-        height: calc(var(--cell-size) * 10);
-        background: var(--color-frame);
-        font-family: Montserrat, sans-serif;
-        color: #eee; 
+		}
+		:host(.black){
+			--color-odd: #fff;
+			--color-even: #1c1c1c;
+			--color-frame: #0a0a0a; 
 		}
 
-		
+		.frame{
+			display: grid;
+        	grid-template-areas: "top top top"
+                              	 "left board right"
+                              	 "bottom bottom bottom";
+        	justify-content: center;
+        	align-items: center;
+        	width: calc(var(--cell-size) * 10);
+        	height: calc(var(--cell-size) * 10);
+        	background: var(--color-frame);
+        	font-family: Montserrat, sans-serif;
+        	color: #eee; 
+		}
+
 		.row{ display: flex;}
 		.top { grid-area: top; }
 		.bottom { grid-area: bottom; }
@@ -51,6 +57,7 @@ class ChessBoard extends HTMLElement {
 			height: var(--cell-size);
 			box-sizing: border-box;
 		}
+
 		.board{
 			display: flex;
 			flex-wrap: wrap;
@@ -66,13 +73,12 @@ class ChessBoard extends HTMLElement {
 			);
 			background-size: calc(var(--cell-size) *2) calc(var(--cell-size) *2);
 		}
-
-		
         `;
 	}
 
 	connectedCallback() {
 		this.render();
+		this.classList.add("wood");
 	}
 
 	renderCells() {
@@ -103,11 +109,16 @@ class ChessBoard extends HTMLElement {
 	addPiece(letter, position) {
 		const x = position[0];
 		const y = position[1];
+		this.getCell(
+			x,
+			y
+		).innerHTML = /*html*/ `<chess-piece type="${letter}"></chess-piece>`;
+	}
 
-		const cell = this.shadowRoot
+	getCell(x, y) {
+		return this.shadowRoot
 			.querySelector(`[x="${x}"][y="${y}"]`)
 			.shadowRoot.querySelector(".cell");
-		cell.innerHTML = /*html*/ `<chess-piece type="${letter}"></chess-piece>`;
 	}
 
 	preparePieces() {
