@@ -34,6 +34,17 @@ class ChessPiece extends HTMLElement {
 		this.render();
 	}
 
+	get id() {
+		return this.type;
+	}
+
+	isWhite() {
+		return this.color === "white";
+	}
+	isBlack() {
+		return this.color === "black";
+	}
+
 	render() {
 		const piece = PIECES[this.type.toUpperCase()];
 		this.shadowRoot.innerHTML = /*html*/ `
