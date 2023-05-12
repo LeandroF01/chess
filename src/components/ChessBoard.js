@@ -1,6 +1,6 @@
+import initialLocations from "../data/initialLocation.json";
 import "./ChessCell.js";
 import "./ChessPiece.js";
-import initialLocation from "../data/initialLocation.json";
 
 class ChessBoard extends HTMLElement {
 	constructor() {
@@ -12,20 +12,17 @@ class ChessBoard extends HTMLElement {
 	}
 
 	isWhiteTurn() {
-		return this.movements % 2 === 0;
+		return this.movements.length % 2 === 0;
 	}
 	isBlackTurn() {
-		return this.movements % 2 !== 0;
+		return this.movements.length % 2 !== 0;
 	}
-
 	isSelectStage() {
 		return this.stage === 0;
 	}
-
 	isTargetStage() {
 		return this.stage === 1;
 	}
-
 	static get styles() {
 		return /*css*/ `
         :host{
@@ -100,7 +97,13 @@ class ChessBoard extends HTMLElement {
 		this.render();
 		this.classList.add("wood");
 	}
-
+	changePieces(theme, ext = "png") {
+		const cells = [...this.shadowRoot.querySelectorAll("chess-cell")];
+		cells.forEach((cell) => {
+			const piece = cell.shadowRoot.querySelector("chess-piece");
+			piece && piece.changeTheme(theme, ext);
+		});
+	}
 	renderCells() {
 		for (let y = 0; y < 8; y++) {
 			for (let x = 0; x < 8; x++) {
@@ -108,13 +111,11 @@ class ChessBoard extends HTMLElement {
 			}
 		}
 	}
-
 	renderCell(y, x) {
 		const board = this.shadowRoot.querySelector(".board");
 		const col = String.fromCharCode(97 + x);
 		const row = 9 - (y + 1);
 		const cell = document.createElement("chess-cell");
-
 		cell.setAttribute("x", col);
 		cell.setAttribute("y", row);
 
@@ -123,50 +124,44 @@ class ChessBoard extends HTMLElement {
 		cell.setAttribute("col", b);
 
 		cell.addEventListener("click", () => this.onClick(cell));
-		cell.addEventListener("contextmenu", (event) =>
-			this.onRightClick(event, cell)
-		);
+		cell.addEventListener("contextmenu", (ev) => this.onRightClick(ev, cell));
 		board.appendChild(cell);
 	}
 
-	hightLightMoves(cells) {
+	hightlightMoves(cells) {
 		cells.forEach((move) => {
-			const cell = this.getCellComponents(move.position);
+			const cell = this.getCellComponent(move.position);
 			cell && cell.classList.add("valid");
 		});
 	}
 
-	onRightClick(event, cell) {
-		event.preventDefault();
+	onRightClick(ev, cell) {
+		ev.preventDefault();
 		cell.classList.add("valid");
-		const isCtrlPressed = event.ctrlKey;
+		const isCtrlPressed = ev.ctrlKey;
 		if (isCtrlPressed) {
-			event.preventDefault();
+			ev.preventDefault();
 			cell.classList.add("valid");
 		}
 
 		if (!isCtrlPressed) {
-			event.preventDefault();
+			ev.preventDefault();
 			const piece = cell.shadowRoot.querySelector("chess-piece");
 			if (!piece) return null;
 			console.log(this.getAllMoves(cell, piece));
 		}
 	}
-	genFakeCells(n) {
-		const texts = (n === 8 ? "87654321" : " abcdefgh ").split("");
-		return texts
-			.map((text) => /* html */ `<div class="fake">${text}</div>`)
-			.join("");
-	}
 
 	onClick(cell) {
 		const piece = cell.shadowRoot.querySelector("chess-piece");
 		const isCancel = cell.classList.contains("selected");
-		const isTargetvalid = cell.classList.contains("valid");
-
+		const isTargetValid = cell.classList.contains("valid");
+		// Select Source
 		if (piece && this.isSelectStage()) this.selectPiece(cell);
+		// Cancel Source
 		else if (isCancel && this.isTargetStage()) this.reset();
-		else if (this.isTargetStage() && isTargetvalid) this.selectTarget(cell);
+		// Select Target
+		else if (this.isTargetStage() && isTargetValid) this.selectTarget(cell);
 	}
 
 	getAllMoves(cell, piece) {
@@ -178,18 +173,18 @@ class ChessBoard extends HTMLElement {
 
 		const moves = [];
 
-		//Piece Pawn
+		// Pawn
 		if (pieceType.toLowerCase() === "p") {
 			const multiplier = piece.color === "white" ? -1 : 1;
 			const isInitialPosition =
 				(piece.isBlack() && y === 1) || (piece.isWhite() && y === 6);
 
-			//Movement Normal
+			// Normal
 			const posForward = this.getCellPosition([x, y + 1 * multiplier]);
 			this.isEmpty(posForward) &&
 				moves.push({ position: posForward, type: "normal" });
 
-			//Movement Initial
+			// Initial
 			const posForwardInitial = this.getCellPosition([x, y + 2 * multiplier]);
 			if (
 				this.isEmpty(posForward) &&
@@ -199,7 +194,7 @@ class ChessBoard extends HTMLElement {
 				moves.push({ position: posForwardInitial, type: "initial" });
 			}
 
-			//Movement Attacks
+			// Attacks
 			const posLeft = this.getCellPosition([x - 1, y + 1 * multiplier]);
 			const posRight = this.getCellPosition([x + 1, y + 1 * multiplier]);
 			const cellLeft = this.getCellComponent(posLeft);
@@ -211,7 +206,7 @@ class ChessBoard extends HTMLElement {
 			isAttackRight && moves.push({ position: posRight, type: "attack" });
 		}
 
-		//Piece Bishop
+		// Bishop
 		if (pieceType.toLowerCase() === "b") {
 			const directions = [
 				[-1, -1],
@@ -251,7 +246,7 @@ class ChessBoard extends HTMLElement {
 			});
 		}
 
-		//Piece Knight
+		// Knight
 		if (pieceType.toLowerCase() === "n") {
 			const directions = [
 				[-2, -1],
@@ -282,7 +277,7 @@ class ChessBoard extends HTMLElement {
 			});
 		}
 
-		//Piece Rook
+		// Rook
 		if (pieceType.toLowerCase() === "r") {
 			const directions = [
 				[-1, 0],
@@ -295,6 +290,7 @@ class ChessBoard extends HTMLElement {
 
 				let nextX = x + deltaX;
 				let nextY = y + deltaY;
+
 				if (this.isInside(nextX, nextY)) {
 					let nextCellPosition = this.getCellPosition([nextX, nextY]);
 					let nextCell = this.getCellComponent(nextCellPosition);
@@ -312,13 +308,15 @@ class ChessBoard extends HTMLElement {
 						nextCellPosition = this.getCellPosition([nextX, nextY]);
 						nextCell = this.getCellComponent(nextCellPosition);
 					}
+
 					if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
 						moves.push({ position: nextCellPosition, type: "attack" });
 					}
 				}
 			});
 		}
-		//Piece Queen
+
+		// Queen
 		if (pieceType.toLowerCase() === "q") {
 			const directions = [
 				[-1, 0],
@@ -353,6 +351,7 @@ class ChessBoard extends HTMLElement {
 						nextCellPosition = this.getCellPosition([nextX, nextY]);
 						nextCell = this.getCellComponent(nextCellPosition);
 					}
+
 					if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
 						moves.push({ position: nextCellPosition, type: "attack" });
 					}
@@ -360,7 +359,7 @@ class ChessBoard extends HTMLElement {
 			});
 		}
 
-		//Piece King
+		// King
 		if (pieceType.toLowerCase() === "k") {
 			const directions = [
 				[-1, 0],
@@ -372,7 +371,6 @@ class ChessBoard extends HTMLElement {
 				[1, -1],
 				[1, 1],
 			];
-
 			directions.forEach((direction) => {
 				const [deltaX, deltaY] = direction;
 
@@ -391,6 +389,7 @@ class ChessBoard extends HTMLElement {
 				}
 			});
 		}
+
 		return moves;
 	}
 
@@ -403,14 +402,15 @@ class ChessBoard extends HTMLElement {
 	getCellPosition(coords) {
 		if (!this.isInside(...coords)) return null;
 
-		const { x, y } = coords;
+		const [x, y] = coords;
 		const col = String.fromCharCode(97 + x);
 		const row = 9 - (y + 1);
 		return `${col}${row}`;
 	}
 
-	getCellComponents(position) {
+	getCellComponent(position) {
 		if (!position) return null;
+
 		const [x, y] = position.split("");
 		const cell = this.shadowRoot.querySelector(
 			`chess-cell[x="${x}"][y="${y}"]`
@@ -422,14 +422,12 @@ class ChessBoard extends HTMLElement {
 		const sourcePiece = cell.shadowRoot.querySelector("chess-piece");
 		const isCorrectWhitePiece = this.isWhiteTurn() && sourcePiece.isWhite();
 		const isCorrectBlackPiece = this.isBlackTurn() && sourcePiece.isBlack();
-
 		const isValidPiece = isCorrectWhitePiece || isCorrectBlackPiece;
 		if (isValidPiece) {
 			cell.select();
 			this.stage = 1;
-
 			const moves = this.getAllMoves(cell, sourcePiece);
-			this.hightLightMoves(moves);
+			this.hightlightMoves(moves);
 		}
 	}
 
@@ -438,20 +436,22 @@ class ChessBoard extends HTMLElement {
 		cells.forEach((cell) => cell.classList.remove("selected", "valid"));
 		this.stage = 0;
 	}
-
 	selectTarget(cell) {
 		this.moveTo(cell);
 	}
-
+	genFakeCells(n) {
+		const texts = (n === 8 ? "87654321" : " abcdefgh ").split("");
+		return texts
+			.map((text) => /* html */ `<div class="fake">${text}</div>`)
+			.join("");
+	}
 	addPiece(letter, position) {
 		const x = position[0];
 		const y = position[1];
 		const cell = this.getCell(x, y);
-
 		const piece = document.createElement("chess-piece");
 		piece.setAttribute("type", letter);
 		cell.appendChild(piece);
-
 		this.PIECES.push(piece);
 	}
 
@@ -459,21 +459,20 @@ class ChessBoard extends HTMLElement {
 		return x >= 0 && x < 8 && y >= 0 && y < 8;
 	}
 
+	// chess-cell
 	at(position) {
 		const x = position[0];
 		const y = position[1];
 		return this.getCell(x, y);
 	}
-
 	isEmpty(position) {
 		const cell = this.at(position);
 		const piece = cell.querySelector("chess-piece");
 		return !piece;
 	}
 
-	hasOpponentPiece(x, y) {
-		const piece = cell.querySelector("chess-piece");
-
+	hasOpponentPiece(cell, sourcePiece) {
+		const piece = cell.shadowRoot.querySelector("chess-piece");
 		return piece && this.isOpponentPiece(piece, sourcePiece);
 	}
 
@@ -484,12 +483,13 @@ class ChessBoard extends HTMLElement {
 	moveTo(targetCell) {
 		const sourceCell = this.shadowRoot.querySelector("chess-cell.selected");
 		const sourcePiece = sourceCell.shadowRoot.querySelector("chess-piece");
-
-		this.movements.push(piece.id + sourceCell.id + targetCell.id);
+		targetCell.shadowRoot.querySelector(".cell").appendChild(sourcePiece);
+		// sourcePiece.incMovements();
+		this.addMovement(sourcePiece, sourceCell, targetCell);
+		this.reset();
 	}
-
-	addMovements(sourcePiece, sourceCell, targetCell) {
-		this.movements.push(sourcePiece.id + sourceCell.id + targetCell.id);
+	addMovement(piece, sourceCell, targetCell) {
+		this.movements.push(piece.id + sourceCell.id + targetCell.id);
 	}
 
 	getHistoryMovements(piece) {
@@ -501,9 +501,6 @@ class ChessBoard extends HTMLElement {
 			.querySelector(`[x="${x}"][y="${y}"]`)
 			.shadowRoot.querySelector(".cell");
 	}
-
-	// movePiece(cell) {}
-
 	getPiece(position) {
 		const isEmpty = this.isEmpty(position);
 		if (!isEmpty) {
@@ -511,11 +508,10 @@ class ChessBoard extends HTMLElement {
 			return cell.querySelector("chess-piece");
 		}
 	}
-
 	preparePieces() {
-		initialLocation.forEach(([piece, position]) =>
-			this.addPiece(piece, position)
-		);
+		initialLocations.forEach(([piece, position]) => {
+			this.addPiece(piece, position);
+		});
 	}
 
 	render() {

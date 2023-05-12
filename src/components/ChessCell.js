@@ -20,7 +20,7 @@ class ChessCell extends HTMLElement {
         }
 
 		:host(.selected) {
-			background: red !important;
+			background: red;
 		  }
 		:host(.valid) {
 			background: green;
