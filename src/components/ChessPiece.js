@@ -7,6 +7,8 @@ const PIECES = {
 	P: "pawn",
 };
 
+import RULES from "../data/rules.json";
+
 class ChessPiece extends HTMLElement {
 	constructor() {
 		super();
@@ -32,6 +34,11 @@ class ChessPiece extends HTMLElement {
 			? "black"
 			: "white";
 		this.render();
+	}
+
+	get directions() {
+		const type = this.type.toLowerCase();
+		return RULES[type];
 	}
 
 	isWhite() {
@@ -62,6 +69,10 @@ class ChessPiece extends HTMLElement {
 
 	isQueen() {
 		return this.type.toLowerCase() === "q";
+	}
+
+	isOpponentOf(piece) {
+		return this.color !== piece.color;
 	}
 
 	render() {
