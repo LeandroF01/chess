@@ -20,10 +20,10 @@ class ChessCell extends HTMLElement {
         }
 
 		:host(.selected) {
-			background: red;
+			background: rgba(255, 0, 0, 0.31) ;
 		  }
 		:host(.valid) {
-			background: green;
+			background: rgba(0, 128, 0, 0.485);
 		  }
 		:host(.selected) chess-piece {
 		  }
@@ -32,6 +32,10 @@ class ChessCell extends HTMLElement {
 
 	get id() {
 		return this.x + this.y;
+	}
+
+	get piece() {
+		return this.shadowRoot.querySelector("chess-piece");
 	}
 
 	select() {
