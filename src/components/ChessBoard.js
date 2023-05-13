@@ -196,25 +196,19 @@ class ChessBoard extends HTMLElement {
 				let nextX = x + deltaX;
 				let nextY = y + deltaY;
 
-				if (this.isInside(nextX, nextY)) {
-					let nextCell = this.getCell([nextX, nextY]);
+				let nextCell = this.getCell([nextX, nextY]);
 
-					while (
-						nextCell &&
-						this.isInside(nextX, nextY) &&
-						nextCell.isEmpty()
-					) {
-						moves.push({ position: nextCell.position, type: "normal" });
+				while (nextCell && nextCell.isEmpty()) {
+					moves.push({ position: nextCell.position, type: "normal" });
 
-						nextX += deltaX;
-						nextY += deltaY;
+					nextX += deltaX;
+					nextY += deltaY;
 
-						nextCell = this.getCell([nextX, nextY]);
-					}
+					nextCell = this.getCell([nextX, nextY]);
+				}
 
-					if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
-						moves.push({ position: nextCell.position, type: "attack" });
-					}
+				if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
+					moves.push({ position: nextCell.position, type: "attack" });
 				}
 			});
 		}
@@ -226,15 +220,12 @@ class ChessBoard extends HTMLElement {
 
 				const nextX = x + deltaX;
 				const nextY = y + deltaY;
+				const nextCell = this.getCell([nextX, nextY]);
 
-				if (this.isInside(nextX, nextY)) {
-					const nextCell = this.getCell([nextX, nextY]);
-
-					if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
-						moves.push({ position: nextCell.position, type: "attack" });
-					} else if (nextCell && nextCell.isEmpty()) {
-						moves.push({ position: nextCell.position, type: "normal" });
-					}
+				if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
+					moves.push({ position: nextCell.position, type: "attack" });
+				} else if (nextCell && nextCell.isEmpty()) {
+					moves.push({ position: nextCell.position, type: "normal" });
 				}
 			});
 		}
@@ -246,26 +237,19 @@ class ChessBoard extends HTMLElement {
 
 				let nextX = x + deltaX;
 				let nextY = y + deltaY;
+				let nextCell = this.getCell([nextX, nextY]);
 
-				if (this.isInside(nextX, nextY)) {
-					let nextCell = this.getCell([nextX, nextY]);
+				while (nextCell && nextCell.isEmpty()) {
+					moves.push({ position: nextCell.position, type: "normal" });
 
-					while (
-						nextCell &&
-						this.isInside(nextX, nextY) &&
-						nextCell.isEmpty()
-					) {
-						moves.push({ position: nextCell.position, type: "normal" });
+					nextCell = this.getCell([nextX, nextY]);
+				}
+				nextX += deltaX;
+				nextY += deltaY;
+				nextCell = this.getCell([nextX, nextY]);
 
-						nextX += deltaX;
-						nextY += deltaY;
-
-						nextCell = this.getCell([nextX, nextY]);
-					}
-
-					if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
-						moves.push({ position: nextCell.position, type: "attack" });
-					}
+				if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
+					moves.push({ position: nextCell.position, type: "attack" });
 				}
 			});
 		}
@@ -277,26 +261,19 @@ class ChessBoard extends HTMLElement {
 
 				let nextX = x + deltaX;
 				let nextY = y + deltaY;
+				let nextCell = this.getCell([nextX, nextY]);
 
-				if (this.isInside(nextX, nextY)) {
-					let nextCell = this.getCell([nextX, nextY]);
+				while (nextCell && nextCell.isEmpty()) {
+					moves.push({ position: nextCell.position, type: "normal" });
 
-					while (
-						nextCell &&
-						this.isInside(nextX, nextY) &&
-						nextCell.isEmpty()
-					) {
-						moves.push({ position: nextCell.position, type: "normal" });
+					nextX += deltaX;
+					nextY += deltaY;
 
-						nextX += deltaX;
-						nextY += deltaY;
+					nextCell = this.getCell([nextX, nextY]);
+				}
 
-						nextCell = this.getCell([nextX, nextY]);
-					}
-
-					if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
-						moves.push({ position: nextCell.position, type: "attack" });
-					}
+				if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
+					moves.push({ position: nextCell.position, type: "attack" });
 				}
 			});
 		}
@@ -309,14 +286,12 @@ class ChessBoard extends HTMLElement {
 				const nextX = x + deltaX;
 				const nextY = y + deltaY;
 
-				if (this.isInside(nextX, nextY)) {
-					const nextCell = this.getCell([nextX, nextY]);
+				const nextCell = this.getCell([nextX, nextY]);
 
-					if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
-						moves.push({ position: nextCell.position, type: "attack" });
-					} else if (nextCell && nextCell.isEmpty()) {
-						moves.push({ position: nextCell.position, type: "normal" });
-					}
+				if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
+					moves.push({ position: nextCell.position, type: "attack" });
+				} else if (nextCell && nextCell.isEmpty()) {
+					moves.push({ position: nextCell.position, type: "normal" });
 				}
 			});
 		}
