@@ -2,9 +2,11 @@ import initialLocations from "../data/initialLocation.json";
 import { Turn } from "../modules/Turns.js";
 import { Movements } from "../modules/Movements.js";
 import { Pieces } from "../modules/Pieces.js";
+import { Stage } from "../modules/Stage";
 import "./ChessCell.js";
 import "./ChessPiece.js";
 
+// Translate positions to coordinates
 import { coords } from "../modules/Utils.js";
 
 const DEFAULT_THEME = "wood";
@@ -16,15 +18,9 @@ class ChessBoard extends HTMLElement {
 		this.pieces = new Pieces();
 		this.movements = new Movements();
 		this.turn = new Turn(this.movements);
-		this.stage = 0;
+		this.stage = new Stage();
 	}
 
-	isSelectStage() {
-		return this.stage === 0;
-	}
-	isTargetStage() {
-		return this.stage === 1;
-	}
 	static get styles() {
 		return /*css*/ `
         :host{
@@ -142,11 +138,11 @@ class ChessBoard extends HTMLElement {
 		const isCancel = cell.classList.contains("selected");
 		const isTargetValid = cell.classList.contains("valid");
 		// Select Source
-		if (piece && this.isSelectStage()) this.selectPiece(cell);
+		if (piece && this.stage.isSelect()) this.selectPiece(cell);
 		// Cancel Source
-		else if (isCancel && this.isTargetStage()) this.reset();
+		else if (isCancel && this.stage.isTarget()) this.reset();
 		// Select Target
-		else if (this.isTargetStage() && isTargetValid) this.selectTarget(cell);
+		else if (this.stage.isTarget() && isTargetValid) this.selectTarget(cell);
 	}
 
 	getAllMoves(cell, piece) {
@@ -262,7 +258,7 @@ class ChessBoard extends HTMLElement {
 
 		if (isValidPiece) {
 			cell.select();
-			this.stage = 1;
+			this.stage.next(); // to target stage
 			const moves = this.getAllMoves(cell, sourcePiece);
 			this.hightlightMoves(moves);
 		}
@@ -271,7 +267,7 @@ class ChessBoard extends HTMLElement {
 	reset() {
 		const cells = [...this.shadowRoot.querySelectorAll("chess-cell")];
 		cells.forEach((cell) => cell.classList.remove("selected", "valid"));
-		this.stage = 0;
+		this.stage.next(); // to select stage
 	}
 	selectTarget(targetCell) {
 		const sourceCell = this.shadowRoot.querySelector("chess-cell.selected");
