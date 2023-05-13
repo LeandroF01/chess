@@ -1,6 +1,7 @@
 import initialLocations from "../data/initialLocation.json";
 import { Turn } from "../modules/Turns.js";
 import { Movements } from "../modules/Movements.js";
+import { Pieces } from "../modules/Pieces.js";
 import "./ChessCell.js";
 import "./ChessPiece.js";
 
@@ -8,7 +9,7 @@ class ChessBoard extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" });
-		this.PIECES = [];
+		this.pieces = new Pieces();
 		this.movements = new Movements();
 		this.turn = new Turn(this.movements);
 		this.stage = 0;
@@ -439,14 +440,14 @@ class ChessBoard extends HTMLElement {
 			.map((text) => /* html */ `<div class="fake">${text}</div>`)
 			.join("");
 	}
-	addPiece(letter, position) {
-		const x = position[0];
-		const y = position[1];
+	addPiece(type, position) {
+		const [x, y] = position.split("");
 		const cell = this.getCell(x, y);
+
 		const piece = document.createElement("chess-piece");
-		piece.setAttribute("type", letter);
+		piece.setAttribute("type", type);
 		cell.appendChild(piece);
-		this.PIECES.push(piece);
+		this.pieces.push(piece);
 	}
 
 	isInside(x, y) {
