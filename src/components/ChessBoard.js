@@ -189,7 +189,7 @@ class ChessBoard extends HTMLElement {
 		}
 
 		// Bishop
-		if (piece.isBishop()) {
+		if (piece.isBishop() || piece.isRook() || piece.isQueen()) {
 			piece.directions.forEach((direction) => {
 				const [deltaX, deltaY] = direction;
 
@@ -226,54 +226,6 @@ class ChessBoard extends HTMLElement {
 					moves.push({ position: nextCell.position, type: "attack" });
 				} else if (nextCell && nextCell.isEmpty()) {
 					moves.push({ position: nextCell.position, type: "normal" });
-				}
-			});
-		}
-
-		// Rook
-		if (piece.isRook()) {
-			piece.directions.forEach((direction) => {
-				const [deltaX, deltaY] = direction;
-
-				let nextX = x + deltaX;
-				let nextY = y + deltaY;
-				let nextCell = this.getCell([nextX, nextY]);
-
-				while (nextCell && nextCell.isEmpty()) {
-					moves.push({ position: nextCell.position, type: "normal" });
-
-					nextCell = this.getCell([nextX, nextY]);
-				}
-				nextX += deltaX;
-				nextY += deltaY;
-				nextCell = this.getCell([nextX, nextY]);
-
-				if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
-					moves.push({ position: nextCell.position, type: "attack" });
-				}
-			});
-		}
-
-		// Queen
-		if (piece.isQueen()) {
-			piece.directions.forEach((direction) => {
-				const [deltaX, deltaY] = direction;
-
-				let nextX = x + deltaX;
-				let nextY = y + deltaY;
-				let nextCell = this.getCell([nextX, nextY]);
-
-				while (nextCell && nextCell.isEmpty()) {
-					moves.push({ position: nextCell.position, type: "normal" });
-
-					nextX += deltaX;
-					nextY += deltaY;
-
-					nextCell = this.getCell([nextX, nextY]);
-				}
-
-				if (nextCell && this.hasOpponentPiece(nextCell, piece)) {
-					moves.push({ position: nextCell.position, type: "attack" });
 				}
 			});
 		}
