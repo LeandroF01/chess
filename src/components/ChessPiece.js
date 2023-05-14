@@ -94,33 +94,36 @@ class ChessPiece extends HTMLElement {
 					{ transform: `translate(${x}px, ${y}px) scale(1.2)`, zIndex: 15 },
 				],
 				{
-					duration: 500,
+					duration: 400,
 					iterations: 1,
 				}
 			);
 			animation.onfinish = () => {
 				resolve();
-				setTimeout(() => play(movementSound), 500);
+				setTimeout(() => play(movementSound), 400);
 			};
 		});
 	}
 
 	toHeaven(cell) {
 		return new Promise((resolve, reject) => {
-			setTimeout(() => play(choirSound), 500);
 			const animation = this.animate(
 				[
-					{ transform: "translate(0, 0)", opacity: 1 },
-					{ transform: "translate(0, -400%", opacity: 0 },
+					{ transform: "scale(1);", opacity: 1 },
+					{ transform: "scale(0.2)", opacity: 0 },
 				],
 				{
 					iterations: 1,
 					duration: 1750,
-					delay: 1000,
+					delay: 400,
 				}
 			);
 			animation.onfinish = () => {
 				resolve();
+				setTimeout(() => {
+					cell.piece.classList.add("piece-eaten");
+					play(choirSound), 500;
+				});
 			};
 		});
 	}
