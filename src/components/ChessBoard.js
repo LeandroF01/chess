@@ -24,6 +24,8 @@ class ChessBoard extends HTMLElement {
 	static get styles() {
 		return /*css*/ `
         :host{
+			--selected-cell-color: #0f06;
+			--valid-cell-color: #f006;
             --pleace-size: 54px;
             --cell-size: 72px;
 			--board-size: calc(var(--cell-size) * 8);
@@ -293,11 +295,35 @@ class ChessBoard extends HTMLElement {
 	}
 
 	moveTo(sourcePiece, targetCell) {
+		const isAttack = Boolean(targetCell.piece);
 		const sourceCell = this.shadowRoot.querySelector("chess-cell.selected");
-		targetCell.shadowRoot.appendChild(sourcePiece);
 
-		this.movements.add(sourcePiece, sourceCell, targetCell);
 		this.reset();
+
+		const sourceAnimation = sourcePiece.slide(sourceCell, targetCell);
+
+		sourceAnimation.then(() => {
+			this.stage.next();
+			targetCell.shadowRoot
+				.querySelector("style")
+				.insertAdjacentElement("afterend", sourcePiece);
+
+			this.movements.add(sourcePiece, sourceCell, targetCell);
+			isAttack && this.attackPiece(targetCell);
+			!isAttack && this.stage.next();
+		});
+	}
+
+	attackPiece(battleCell) {
+		const [attackerPiece, attackedPiece] =
+			battleCell.shadowRoot.querySelectorAll("chess-piece");
+
+		const animation = attackedPiece.toHeaven(battleCell);
+		this.pieces.kill(attackedPiece);
+
+		animation.then(() => {
+			this.stage.next();
+		});
 	}
 
 	at(coords) {

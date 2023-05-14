@@ -9,6 +9,13 @@ const PIECES = {
 
 import RULES from "../data/rules.json";
 
+const choirSound = new Audio("../sound/attack.mp3");
+const movementSound = new Audio("../sound/movement.mp3");
+const play = (sound) => {
+	sound.currentTime = 0;
+	sound.play();
+};
+
 class ChessPiece extends HTMLElement {
 	constructor() {
 		super();
@@ -18,7 +25,7 @@ class ChessPiece extends HTMLElement {
 	static get styles() {
 		return /*css*/ `
         :host {
-            /* Estilos para :host */
+			clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
         }
 		.piece img {
 		// image-rendering: pixelated;
@@ -73,6 +80,49 @@ class ChessPiece extends HTMLElement {
 
 	isOpponentOf(piece) {
 		return this.color !== piece.color;
+	}
+
+	slide(source, target) {
+		const cellSize = source.clientWidth;
+		const x = (target.coords[0] - source.coords[0]) * cellSize;
+		const y = (target.coords[1] - source.coords[1]) * cellSize;
+
+		return new Promise((resolve, reject) => {
+			const animation = this.animate(
+				[
+					{ transform: "translate(0, 0) scale(1.2)", zIndex: 15 },
+					{ transform: `translate(${x}px, ${y}px) scale(1.2)`, zIndex: 15 },
+				],
+				{
+					duration: 500,
+					iterations: 1,
+				}
+			);
+			animation.onfinish = () => {
+				resolve();
+				setTimeout(() => play(movementSound), 500);
+			};
+		});
+	}
+
+	toHeaven(cell) {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => play(choirSound), 500);
+			const animation = this.animate(
+				[
+					{ transform: "translate(0, 0)", opacity: 1 },
+					{ transform: "translate(0, -400%", opacity: 0 },
+				],
+				{
+					iterations: 1,
+					duration: 1750,
+					delay: 1000,
+				}
+			);
+			animation.onfinish = () => {
+				resolve();
+			};
+		});
 	}
 
 	render() {
