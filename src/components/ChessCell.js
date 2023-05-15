@@ -1,3 +1,5 @@
+const choirSound = new Audio("../sound/attack.mp3");
+
 class ChessCell extends HTMLElement {
 	constructor() {
 		super();
@@ -44,6 +46,9 @@ class ChessCell extends HTMLElement {
 		return this.shadowRoot.querySelector("chess-piece");
 	}
 
+	hasOpponentPiece(sourcePiece) {
+		return this.piece && this.piece.isOpponentOf(sourcePiece);
+	}
 	isEmpty() {
 		return !this.piece;
 	}
@@ -60,6 +65,30 @@ class ChessCell extends HTMLElement {
 		// this.x = this.getAttribute("x");
 		// this.y = this.getAttribute("y");
 		this.render();
+	}
+
+	toHeaven(cell) {
+		return new Promise((resolve, reject) => {
+			const animation = this.animate(
+				[
+					{ transform: "scale(1);", opacity: 1 },
+					{ transform: "scale(0.2)", opacity: 0 },
+				],
+				{
+					iterations: 1,
+					duration: 1750,
+					delay: 400,
+				}
+			);
+			animation.onfinish = () => {
+				resolve();
+				setTimeout(() => {
+					cell.piece.classList.add("piece-eaten");
+					play(choirSound), 500;
+				});
+				piece.remove();
+			};
+		});
 	}
 
 	render() {

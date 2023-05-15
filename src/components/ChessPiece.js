@@ -9,7 +9,6 @@ const PIECES = {
 
 import RULES from "../data/rules.json";
 
-const choirSound = new Audio("../sound/attack.mp3");
 const movementSound = new Audio("../sound/movement.mp3");
 const play = (sound) => {
 	sound.currentTime = 0;
@@ -101,29 +100,6 @@ class ChessPiece extends HTMLElement {
 			animation.onfinish = () => {
 				resolve();
 				setTimeout(() => play(movementSound), 400);
-			};
-		});
-	}
-
-	toHeaven(cell) {
-		return new Promise((resolve, reject) => {
-			const animation = this.animate(
-				[
-					{ transform: "scale(1);", opacity: 1 },
-					{ transform: "scale(0.2)", opacity: 0 },
-				],
-				{
-					iterations: 1,
-					duration: 1750,
-					delay: 400,
-				}
-			);
-			animation.onfinish = () => {
-				resolve();
-				setTimeout(() => {
-					cell.piece.classList.add("piece-eaten");
-					play(choirSound), 500;
-				});
 			};
 		});
 	}

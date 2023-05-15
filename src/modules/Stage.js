@@ -22,7 +22,9 @@ export class Stage {
 	isWaitingAfter() {
 		return this.stage === 3;
 	}
-
+	reset() {
+		this.stage = 0;
+	}
 	next() {
 		if (this.stage === 0) {
 			this.stage = 1;
