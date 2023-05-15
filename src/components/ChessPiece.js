@@ -15,10 +15,16 @@ const play = (sound) => {
 	sound.play();
 };
 
+const getSkin = (theme, filename) => {
+	const ext = theme === "normal" ? "svg" : "png";
+	return `../assets/pieces/${theme}/${filename}.png`;
+};
+
 class ChessPiece extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" });
+		this.theme = "normal";
 	}
 
 	static get styles() {
@@ -103,14 +109,20 @@ class ChessPiece extends HTMLElement {
 			};
 		});
 	}
+	changeTheme(theme = "normal") {
+		this.theme = theme;
+		const piece = PIECES[this.type.toUpperCase()];
+		const img = this.shadowRoot.querySelector(".piece img");
+		img.src = getSkin(theme, `${this.color}-${piece}`);
+	}
 
 	render() {
 		const piece = PIECES[this.type.toUpperCase()];
+		const url = getSkin(this.theme, `${this.color}-${piece}`);
 		this.shadowRoot.innerHTML = /*html*/ `
         <style>${ChessPiece.styles}</style>
         <div class="piece">
-            <img src="../assets/pieces/${this.color}-${piece}.png" 
-			alt="${this.color}-${piece}" />
+		<img src="${url}" alt="${this.color} ${piece}" />
         </div>
         `;
 	}
