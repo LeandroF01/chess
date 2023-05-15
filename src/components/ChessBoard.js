@@ -1,4 +1,3 @@
-import initialLocations from "../data/initialLocation.json";
 import { Turn } from "../modules/Turns.js";
 import { Movements } from "../modules/Movements.js";
 import { Pieces } from "../modules/Pieces.js";
@@ -7,11 +6,11 @@ import "./ChessCell.js";
 import "./ChessPiece.js";
 
 // Translate positions to coordinates
-import { coords } from "../modules/Utils.js";
+import { coords, toggleColorPieces } from "../modules/Utils.js";
 
 const DEFAULT_THEME = "wood";
 
-class ChessBoard extends HTMLElement {
+export class ChessBoard extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" });
@@ -284,10 +283,6 @@ class ChessBoard extends HTMLElement {
 			.join("");
 	}
 
-	isInside(x, y) {
-		return x >= 0 && x < 8 && y >= 0 && y < 8;
-	}
-
 	// chess-cell
 
 	moveTo(sourcePiece, targetCell) {
@@ -309,6 +304,42 @@ class ChessBoard extends HTMLElement {
 			isAttack && this.attackPiece(targetCell);
 			!isAttack && this.stage.next();
 		});
+	}
+	toFEN() {
+		return (
+			toggleColorPieces(
+				[...this.shadowRoot.querySelectorAll("chess-cell")]
+					.map((cell) => cell.piece?.type)
+					.reduce((ac, el) => ac + (el || 1), "")
+					.replace(/(\S{8})/g, "$1/")
+					.replace(/(11+)/g, (x) => x.length)
+			).replace(/\/$/, " ") + this.turn.toString()[0]
+		);
+	}
+
+	fromFEN(fen) {}
+
+	setFromFEN(fen) {
+		const board = document.createElement("chess-board");
+		document.querySelector(".app").appendChild(board);
+
+		const [state, turn] = toggleColorPieces(fen).split(" ");
+		const rows = state.replaceAll("/", "").split("");
+		let pos = 0;
+
+		rows.forEach((item) => {
+			const num = parseInt(item);
+			const isEmpty = !Number.isNaN(num);
+
+			if (!isEmpty) {
+				const coords = [pos % 8, ~~(pos / 8)];
+				board.addPiece(item, coords);
+			}
+
+			pos += isEmpty ? num : 1;
+		});
+
+		this.turn.set(turn);
 	}
 
 	attackPiece(battleCell) {
@@ -334,10 +365,6 @@ class ChessBoard extends HTMLElement {
 		cell.appendChild(piece);
 
 		this.pieces.push(piece);
-	}
-
-	preparePieces() {
-		initialLocations.forEach(([piece, coords]) => this.addPiece(piece, coords));
 	}
 
 	render() {

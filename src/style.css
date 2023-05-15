@@ -6,7 +6,7 @@ body {
   background: #223;
 }
 
-#app {
+.app {
   display: flex;
   justify-content: center;
   margin-top: 5em;

@@ -1,9 +1,8 @@
 import "./components/ChessBoard.js";
 import * as dat from "dat.gui";
 
-const board = document.querySelector("chess-board");
-
-board.preparePieces();
+const board = document.createElement("chess-board");
+board.setFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w");
 
 const gui = new dat.GUI();
 
