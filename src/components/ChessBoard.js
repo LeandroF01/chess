@@ -350,8 +350,8 @@ export class ChessBoard extends HTMLElement {
 		const [attackerPiece, attackedPiece] =
 			battleCell.shadowRoot.querySelectorAll("chess-piece");
 
-		const animation = battleCell.elevateToHeaven(attackedPiece);
-		this.pieces.pop(attackedPiece);
+		const animation = attackedPiece.toHeaven(battleCell);
+		this.pieces.kill(attackedPiece);
 
 		animation.then(() => {
 			this.stage.next();
