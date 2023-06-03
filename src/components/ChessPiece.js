@@ -33,7 +33,6 @@ class ChessPiece extends HTMLElement {
 			clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
         }
 		.piece img {
-		// image-rendering: pixelated;
 		filter: drop-shadow(1px 1px 1px #0006);
         cursor: pointer;
 		}

@@ -49,12 +49,13 @@ class ChessCell extends HTMLElement {
 	hasOpponentPiece(sourcePiece) {
 		return this.piece && this.piece.isOpponentOf(sourcePiece);
 	}
-	isEmpty() {
-		return !this.piece;
-	}
 
 	select() {
 		this.classList.add("selected");
+	}
+
+	isEmpty() {
+		return !this.piece;
 	}
 
 	unselect() {

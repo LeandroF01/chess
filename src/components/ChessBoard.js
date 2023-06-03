@@ -141,10 +141,9 @@ export class ChessBoard extends HTMLElement {
 		// Select Source
 		if (piece && this.stage.isSelect()) this.selectPiece(cell);
 		// Cancel Source
-		else if (isCancel && this.stage.isTarget()) {
-			this.reset();
-			this.stage.reset();
-		} else if (this.stage.isTarget() && isTargetValid) this.selectTarget(cell);
+		else if (isCancel && this.stage.isTarget()) this.reset();
+		// Select Target
+		else if (this.stage.isTarget() && isTargetValid) this.selectTarget(cell);
 	}
 
 	getAllMoves(cell, piece) {
@@ -265,16 +264,17 @@ export class ChessBoard extends HTMLElement {
 		}
 	}
 
-	reset() {
-		const cells = [...this.shadowRoot.querySelectorAll("chess-cell")];
-		cells.forEach((cell) => cell.classList.remove("selected", "valid"));
-		this.stage.next(); // to select stage
-	}
 	selectTarget(targetCell) {
 		const sourceCell = this.shadowRoot.querySelector("chess-cell.selected");
 		const sourcePiece = sourceCell.piece;
 
 		this.moveTo(sourcePiece, targetCell);
+	}
+
+	reset() {
+		const cells = [...this.shadowRoot.querySelectorAll("chess-cell")];
+		cells.forEach((cell) => cell.classList.remove("selected", "valid"));
+		this.stage.next(); // to select stage
 	}
 	genFakeCells(n) {
 		const texts = (n === 8 ? "87654321" : " abcdefgh ").split("");
@@ -345,12 +345,11 @@ export class ChessBoard extends HTMLElement {
 	attackPiece(battleCell) {
 		const [attackerPiece, attackedPiece] =
 			battleCell.shadowRoot.querySelectorAll("chess-piece");
-
-		const animation = battleCell.elevateToHeaven(attackedPiece);
-		this.pieces.pop(attackedPiece);
+		const animation = attackedPiece.toHeaven(battleCell);
+		this.pieces.kill(attackedPiece);
 
 		animation.then(() => {
-			animation.then(() => this.stage.next());
+			this.stage.next();
 		});
 	}
 
