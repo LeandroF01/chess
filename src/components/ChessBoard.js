@@ -18,6 +18,7 @@ export class ChessBoard extends HTMLElement {
 		this.movements = new Movements();
 		this.turn = new Turn(this.movements);
 		this.stage = new Stage();
+		this.capturedPieces = [];
 	}
 
 	static get styles() {
@@ -309,6 +310,7 @@ export class ChessBoard extends HTMLElement {
 			!isAttack && this.stage.next();
 		});
 	}
+
 	toFEN() {
 		return (
 			toggleColorPieces(
