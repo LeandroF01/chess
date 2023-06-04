@@ -37,6 +37,10 @@ class ChessPiece extends HTMLElement {
 		filter: drop-shadow(1px 1px 1px #0006);
         cursor: pointer;
 		}
+
+		 .piece-eaten {
+			display: none;
+		 }
         `;
 	}
 
@@ -121,21 +125,35 @@ class ChessPiece extends HTMLElement {
 			const animation = this.animate(
 				[
 					{ transform: "scale(1);", opacity: 1 },
+					{ transform: "scale(0.2)", opacity: 0, offset: 0.5 },
 					{ transform: "scale(0.2)", opacity: 0 },
 				],
 				{
 					iterations: 1,
-					duration: 1750,
-					delay: 400,
+					duration: 1250,
+					delay: 200,
 				}
 			);
-			animation.onfinish = () => {
-				resolve();
-				setTimeout(() => {
-					cell.piece.classList.add("piece-eaten");
-					play(choirSound), 500;
-				});
-			};
+
+			const chessPieces = cell.shadowRoot.querySelectorAll("chess-piece");
+
+			if (chessPieces.length >= 2) {
+				const secondChessPiece = chessPieces[1];
+				const pieceElement =
+					secondChessPiece.shadowRoot.querySelector(".piece");
+
+				animation.onfinish = () => {
+					resolve();
+					pieceElement.classList.add("piece-eaten");
+					setTimeout(() => {
+						play(this.choirSound);
+					}, 300);
+				};
+			} else {
+				console.log(
+					"No se encontró el segundo elemento 'chess-piece' dentro de 'chess-cell'"
+				);
+			}
 		});
 	}
 

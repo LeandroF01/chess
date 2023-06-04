@@ -1,6 +1,8 @@
 class ChessCell extends HTMLElement {
 	constructor() {
 		super();
+		this.captured = false;
+		this.capturedBy = null;
 		this.attachShadow({ mode: "open" });
 	}
 
@@ -25,6 +27,8 @@ class ChessCell extends HTMLElement {
 		  }
 		:host(.selected) chess-piece {
 		  }
+		 
+		
         `;
 	}
 
@@ -47,31 +51,9 @@ class ChessCell extends HTMLElement {
 	hasOpponentPiece(sourcePiece) {
 		return this.piece && this.piece.isOpponentOf(sourcePiece);
 	}
+
 	isEmpty() {
 		return !this.piece;
-	}
-	toHeaven(cell) {
-		return new Promise((resolve, reject) => {
-			const animation = this.animate(
-				[
-					{ transform: "scale(1);", opacity: 1 },
-					{ transform: "scale(0.2)", opacity: 0 },
-				],
-				{
-					iterations: 1,
-					duration: 1750,
-					delay: 400,
-				}
-			);
-			animation.onfinish = () => {
-				resolve();
-				setTimeout(() => {
-					cell.piece.classList.add("piece-eaten");
-					play(choirSound), 500;
-				});
-				piece.remove();
-			};
-		});
 	}
 
 	select() {
