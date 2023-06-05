@@ -12,8 +12,10 @@ import RULES from "../data/rules.json";
 const choirSound = new Audio("../sound/attack.mp3");
 const movementSound = new Audio("../sound/movement.mp3");
 const play = (sound) => {
-	sound.currentTime = 0;
-	sound.play();
+	if (sound && sound.readyState >= 2) {
+		sound.currentTime = 0;
+		sound.play();
+	}
 };
 
 const getSkin = (theme, filename) => {
@@ -124,14 +126,14 @@ class ChessPiece extends HTMLElement {
 		return new Promise((resolve, reject) => {
 			const animation = this.animate(
 				[
-					{ transform: "scale(1);", opacity: 1 },
+					{ transform: "scale(1)", opacity: 1 },
 					{ transform: "scale(0.2)", opacity: 0, offset: 0.5 },
 					{ transform: "scale(0.2)", opacity: 0 },
 				],
 				{
 					iterations: 1,
-					duration: 1250,
-					delay: 200,
+					duration: 1200,
+					delay: 300,
 				}
 			);
 
@@ -146,7 +148,7 @@ class ChessPiece extends HTMLElement {
 					resolve();
 					pieceElement.classList.add("piece-eaten");
 					setTimeout(() => {
-						play(this.choirSound);
+						play(choirSound);
 					}, 300);
 				};
 			} else {
