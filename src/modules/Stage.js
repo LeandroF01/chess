@@ -19,8 +19,13 @@ export class Stage {
 	isWaitingBefore() {
 		return this.stage === 2;
 	}
+
 	isWaitingAfter() {
 		return this.stage === 3;
+	}
+
+	reset() {
+		this.stage = 0;
 	}
 
 	next() {

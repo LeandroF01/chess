@@ -142,7 +142,10 @@ export class ChessBoard extends HTMLElement {
 		// Select Source
 		if (piece && this.stage.isSelect()) this.selectPiece(cell);
 		// Cancel Source
-		else if (isCancel && this.stage.isTarget()) this.reset();
+		else if (isCancel && this.stage.isTarget()) {
+			this.reset();
+			this.stage.reset();
+		}
 		// Select Target
 		else if (this.stage.isTarget() && isTargetValid) this.selectTarget(cell);
 	}
@@ -276,8 +279,8 @@ export class ChessBoard extends HTMLElement {
 	reset() {
 		const cells = [...this.shadowRoot.querySelectorAll("chess-cell")];
 		cells.forEach((cell) => cell.classList.remove("selected", "valid"));
-		this.stage.next(); // to select stage
 	}
+
 	genFakeCells(n) {
 		const texts = (n === 8 ? "87654321" : " abcdefgh ").split("");
 		return texts
@@ -296,7 +299,7 @@ export class ChessBoard extends HTMLElement {
 		const sourceCell = this.shadowRoot.querySelector("chess-cell.selected");
 
 		this.reset();
-
+		this.stage.next();
 		const sourceAnimation = sourcePiece.slide(sourceCell, targetCell);
 
 		sourceAnimation.then(() => {
