@@ -16,8 +16,10 @@ gui
 	.onChange((data) => board.changePieces(data));
 
 gui.add(options, "theme", ["wood", "black"]).onChange((data) => {
-	board.classList.remove("wood", "black");
-	board.classList.add(data);
+	const chessboard = document.querySelector("chess-board");
+	chessboard.classList.remove("wood", "black");
+	console.log(data);
+	chessboard.classList.add(data);
 });
 
 gui.close();

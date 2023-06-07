@@ -8,7 +8,7 @@ import "./ChessPiece.js";
 // Translate positions to coordinates
 import { coords, toggleColorPieces } from "../modules/Utils.js";
 
-const DEFAULT_THEME = "wood";
+const DEFAULT_THEME = "black";
 
 export class ChessBoard extends HTMLElement {
 	constructor() {
@@ -98,7 +98,8 @@ export class ChessBoard extends HTMLElement {
 		this.classList.add(DEFAULT_THEME);
 	}
 	changePieces(theme) {
-		const cells = [...this.shadowRoot.querySelectorAll("chess-cell")];
+		const board = document.querySelector("chess-board");
+		const cells = [...board.shadowRoot.querySelectorAll("chess-cell")];
 		cells.forEach((cell) => {
 			const piece = cell.piece;
 			piece && piece.changeTheme(theme);
@@ -325,8 +326,6 @@ export class ChessBoard extends HTMLElement {
 			).replace(/\/$/, " ") + this.turn.toString()[0]
 		);
 	}
-
-	fromFEN(fen) {}
 
 	setFromFEN(fen) {
 		const board = document.createElement("chess-board");

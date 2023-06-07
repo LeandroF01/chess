@@ -19,7 +19,6 @@ const play = (sound) => {
 };
 
 const getSkin = (theme, filename) => {
-	const ext = theme === "normal" ? "svg" : "png";
 	return `../assets/pieces/${theme}/${filename}.png`;
 };
 
@@ -27,7 +26,7 @@ class ChessPiece extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" });
-		this.theme = "normal";
+		this.theme = "chess";
 	}
 
 	static get styles() {
@@ -115,7 +114,7 @@ class ChessPiece extends HTMLElement {
 			};
 		});
 	}
-	changeTheme(theme = "normal") {
+	changeTheme(theme = "chess") {
 		this.theme = theme;
 		const piece = PIECES[this.type.toUpperCase()];
 		const img = this.shadowRoot.querySelector(".piece img");
