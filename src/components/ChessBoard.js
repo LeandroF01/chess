@@ -1,12 +1,12 @@
-import { Turn } from "../modules/Turns.js";
-import { Movements } from "../modules/Movements.js";
-import { Pieces } from "../modules/Pieces.js";
+import { Turn } from "../modules/Turns";
+import { Movements } from "../modules/Movements";
+import { Pieces } from "../modules/Pieces";
 import { Stage } from "../modules/Stage";
-import "./ChessCell.js";
-import "./ChessPiece.js";
+import "./ChessCell";
+import "./ChessPiece";
 
 // Translate positions to coordinates
-import { coords, toggleColorPieces } from "../modules/Utils.js";
+import { coords, toggleColorPieces } from "../modules/Utils";
 
 const DEFAULT_THEME = "black";
 

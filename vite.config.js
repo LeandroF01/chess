@@ -9,7 +9,7 @@ export default defineConfig({
 		assetsDir: "assets",
 		rollupOptions: {
 			input: {
-				main: "./main.js", // Ruta al archivo principal de tu aplicación
+				main: "./src/main.js", // Ruta al archivo principal de tu aplicación
 			},
 		},
 	},

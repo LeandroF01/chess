@@ -1,4 +1,4 @@
-import "./components/ChessBoard.js";
+import "./components/ChessBoard";
 import * as dat from "dat.gui";
 
 const board = document.createElement("chess-board");
@@ -18,7 +18,6 @@ gui
 gui.add(options, "theme", ["wood", "black"]).onChange((data) => {
 	const chessboard = document.querySelector("chess-board");
 	chessboard.classList.remove("wood", "black");
-	console.log(data);
 	chessboard.classList.add(data);
 });
 

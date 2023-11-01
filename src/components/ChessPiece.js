@@ -7,7 +7,7 @@ const PIECES = {
 	P: "pawn",
 };
 
-import RULES from "../data/rules.json";
+import RULES from "../data/rules";
 
 const choirSound = new Audio("../sound/attack.mp3");
 const movementSound = new Audio("../sound/movement.mp3");
