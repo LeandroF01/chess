@@ -19,7 +19,7 @@ const play = (sound) => {
 };
 
 const getSkin = (theme, filename) => {
-	return `../assets/pieces/${theme}/${filename}.png`;
+	return `/${theme}/${filename}.png`;
 };
 
 class ChessPiece extends HTMLElement {
